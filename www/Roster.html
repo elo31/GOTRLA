@@ -16,6 +16,10 @@
 	</head>
 	
 	<body>
+		<span class="left" aria-hidden="true">
+				<input type='submit' id="logo" value='Logout' align="right"></input>
+				</span>
+
 		<header>
 			<h3 id="h3">Rosters</h3>
 		</header>
@@ -33,6 +37,13 @@
 	<script>
 	
 	$("document").ready(function(){
+		
+		var myEl = document.getElementById('logo');
+
+		myEl.addEventListener('click', function() {
+    		window.location="login.html";
+}, false);
+		
 		$('#teams').delegate('tr', 'click' , function(){
 			var id = ($(this).attr('id'));
 			var val = ($(this).attr('value'));

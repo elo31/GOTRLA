@@ -113,7 +113,7 @@
 			abc1 = coach[l].children;
 		 	bca1 = abc1[l].checked;
 		 	avpresence = bca1?1:0;
-			volobj={'v_id':v_id,
+			volobj={'vid':v_id,
 					'avpresence':avpresence
 				};
 					
@@ -126,7 +126,7 @@
 			abc = girl[k].children;
 		 	bca = abc[k].checked;
 		 	agpresence = bca?1:0;
-			girlobj={'g_id':g_id,
+			girlobj={'gid':g_id,
 					'agpresence':agpresence
 				};
 					
@@ -147,21 +147,27 @@
 		$.ajax({
       	type: "POST",
       	dataType: "json",
-      	url: "http://gotrla.net/submitph.php", //Relative or absolute path to response.php file
+      	url: "http://gotrla.net/submit.php", //Relative or absolute path to response.php file
       	data: senddata,
         success: function(data3) 
        {
        		
-       		alert("Success!"+data3);
+       		alert("Success!");
+       		window.location="Roster.html";
 		},
 		 error: function(a,b,c) {
 		        alert(a+b+c+"here");
 		  
 		}
     });
+    
+   
+             
+           return false;             
+    	});
+    
  });		
-			
-				});
+
 				
 
 	
