@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+		<link rel="stylesheet" href="mystyle.css">
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+		<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+		<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+	</head>
+	
+	<body>
+		<header>
+			<a class="back" href="Session.html"><span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span></a>
+			
+			<h3 id="h3">Attendance</h3>
+		</header>
+		<form class="form-inline" id="saveform" role="form"  >
+		<div class="list container-fluid">
+			<p>COACHES</p>
+			<table class="table table-hover" id='coaches'>
+				
+			</table>
+		</div>
+		<div class="list container-fluid">
+			<p>GIRLS</p>
+			<table class="table table-hover" id='girls'>
+				
+			</table>
+		</div>
+		<center><input type='submit' name="save" value='Save'></input></center>
+		</form>
+	</body>
+	
+	<script>
+		
+		$("document").ready(function(){
+		var vid=localStorage.getItem("v_id");
+		var cid=localStorage.getItem("c_id");
+		var session=localStorage.getItem("session");
+		var makejson = {
+  			c_id: cid,
+  			session:session
+    	};
+    	var fetchvolgirls=JSON.stringify(makejson);
+		$.ajax({
+      	type: "POST",
+      	dataType: "json",
+      	url: "http://gotrla.net/fetchattend.php", //Relative or absolute path to response.php file
+      	data: fetchvolgirls,
+        success: function(dataobj) 
+       {
+       		
+       		data = dataobj.volunteer;
+       		data2=dataobj.girls;
+       		
+       		var i=0, j=0;
+       		var html="";
+       		var html1="";
+       	
+       	for(i=0;i<data.length;i++){
+       		
+       		
+       		v_name=data[i].v_name;
+       		v_id=data[i].v_id;
+       		av_presence=data[i].av_presence;
+       		av_pre = av_presence == 1 ? "checked" : " "; 
+       		
+       		
+       		html+=html+"<tr><td id='"+v_id+"'>"+v_name+"<input type='checkbox' "+av_pre +" name='atv"+i+"' align='right'/></td></tr>";	
+       		
+       	}
+       	for(j=0;j<data2.length;j++){
+
+       		g_id=data2[j].g_id;
+       		g_fname=data2[j].g_firstname;
+       		g_lname=data2[j].g_lastname;
+       		ag_presence=data2[j].ag_presence;
+       		ag_pre = ag_presence == 1 ? "checked" : " "; 
+       		
+       		
+       		html1+=html1+"<tr><td id='"+g_id+"' value='"+j+"'>"+g_fname+" "+g_lname+"<input type='checkbox' id='"+g_id+"' "+ag_pre +" name='att"+j+"' align='right'/></td></tr>";	
+       		}
+       		
+    
+       	html1=html1+"";
+       	html=html+"";
+       
+       	
+		 $( html ).appendTo("#coaches");
+		 
+		 $( html1 ).appendTo("#girls");
+},
+		 error: function(a,b,c) {
+		        alert("Coaches Ajax"+b+c);
+		  
+		}
+    });
+
+    	$('#saveform').submit(function(){
+       		
+       		var girl = $('#girls > tbody > tr > td');
+			var coach=  $('#coaches > tbody > tr > td');
+			
+		var k=0,l=0;
+		var g_id,v_id,abc,abc1,bca,bca1,agpresence,avpresence;
+		var girlsarr = new Array();
+		var volarr= new Array();
+		
+		for(l=0;l<coach.length;l++){
+			
+			v_id = coach[l].id;
+			abc1 = coach[l].children;
+		 	bca1 = abc1[l].checked;
+		 	avpresence = bca1?1:0;
+			volobj={'v_id':v_id,
+					'avpresence':avpresence
+				};
+					
+			volarr.push(volobj);
+		}
+
+		
+		for (k=0;k<girl.length;k++){
+			g_id = girl[k].id;
+			abc = girl[k].children;
+		 	bca = abc[k].checked;
+		 	agpresence = bca?1:0;
+			girlobj={'g_id':g_id,
+					'agpresence':agpresence
+				};
+					
+			girlsarr.push(girlobj);
+		}
+		
+		var makejson1 = {
+  			c_id: cid,
+  			session:session,
+  			createdby:vid,
+  			girls:girlsarr,
+  			volunteers:volarr
+    	};
+    	var senddata=JSON.stringify(makejson1);
+    	alert(senddata);
+		
+		//Send Updated Attendance Details	
+		$.ajax({
+      	type: "POST",
+      	dataType: "json",
+      	url: "http://gotrla.net/submitph.php", //Relative or absolute path to response.php file
+      	data: senddata,
+        success: function(data3) 
+       {
+       		
+       		alert("Success!"+data3);
+		},
+		 error: function(a,b,c) {
+		        alert(a+b+c+"here");
+		  
+		}
+    });
+ });		
+			
+				});
+				
+
+	
+	</script>
+</html>

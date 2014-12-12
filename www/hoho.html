@@ -1,0 +1,57 @@
+<html>
+<head>
+    
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+    </head>
+<body>
+    <form method="get">
+<input type="submit" value="Submit">
+    </form>
+    <div class="the-return">
+    </div>
+<script>
+
+
+$("document").ready(function(){
+  $('form').submit(function(){
+    var data = {
+      "action": "test"
+    };
+    data = $('form').serialize();
+    $.ajax({
+      type: "GET",
+      dataType: "json",
+      url: "http://localhost/gotrla/hey.php", //Relative or absolute path to response.php file
+      data: data,
+      success: function(data) 
+        {
+           
+            htmlwrite=data[0].u_id;
+            
+         $(".the-return").html(
+             htmlwrite
+        );
+ 
+        
+      },
+       
+        
+        
+        
+        
+    
+    error: function(a,b,c) {
+        alert("hello");
+  
+}
+    });
+       
+    return false;
+  });
+});
+
+</script>
+</body>
+</html>

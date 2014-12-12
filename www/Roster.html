@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+		<link rel="stylesheet" href="mystyle.css">
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+		<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+		<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+		<script src="http://code.jquery.com/jquery-1.8.2.min.js"></script>
+		<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.9/jquery.validate.min.js"></script>
+		<script src="bootstrap-table.min.js"></script>
+		<link rel="stylesheet" href="bootstrap-table.min.css">
+		
+		
+	</head>
+	
+	<body>
+		<header>
+			<h3 id="h3">Rosters</h3>
+		</header>
+		<div class="list container-fluid">
+			
+				
+		<div class="the_return">
+			<table class='table table hover' id='teams'>
+		
+			</table>	
+		</div>		
+			
+		</div>
+	</body>
+	<script>
+	
+	$("document").ready(function(){
+		$('#teams').delegate('tr', 'click' , function(){
+			var id = ($(this).attr('id'));
+			var val = ($(this).attr('value'));
+			// alert(id + val);
+			localStorage.setItem("c_id",id);
+			localStorage.setItem("val",val);
+			
+			window.location="Session.html";
+		});
+		
+  			var data = {
+      			"action": "test"
+    	};
+     	var v_id=localStorage.getItem("v_id");
+      	var makejson = {
+  			v_id: v_id
+    	};
+    	var volid=JSON.stringify(makejson);
+    $.ajax({
+      type: "POST",
+      dataType: "json",
+      url: "http://gotrla.net/rostervoljsondisplay.php", //Relative or absolute path to response.php file
+      data: volid,
+        success: function(data) 
+       {
+       	
+       	var i=0;
+       	var html="";
+       	
+       	for(i=0;i<=7;i++){
+       		
+       		if(!data[i]){
+       			break;
+       		}
+       		
+       		else{
+       		c_name=data[i].c_name;
+       		c_id=data[i].c_id;
+       		c_duration=data[i].c_duration;
+       		html+=html+"<tr id='"+c_id+"' value='"+c_duration+"'><td>"+c_name+"</td></tr>";	
+       		}
+       		
+       	}
+       	html=html+"";
+       
+       	
+ 		$( html ).appendTo("#teams");
+          
+      	},
+   
+      	
+    error: function(a,b,c) {
+        alert("There's an Error");
+  
+}
+    });
+       
+    return false;
+  
+});
+	
+	 document.addEventListener("deviceready", 
+
+    // Cordova is ready
+    //
+    function (){
+    	console.log("Device Ready");
+        
+
+        
+   
+    });
+
+	</script>
+	
+</html>

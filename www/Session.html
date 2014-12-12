@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+		<link rel="stylesheet" href="mystyle.css">
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+		<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+		<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+		<script src="bootstrap-table.min.js"></script>
+		<link rel="stylesheet" href="bootstrap-table.min.css">
+	</head>
+	
+	<body>
+		<header>
+			<a class="back" href="Roster.html"><span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span></a>
+			<h3 id="h3">Sessions</h3>
+		</header>
+		<div class="list container-fluid">
+			
+				<div class="the_return">
+	<table class='table table hover' id='sessions'>
+		
+		</table>	
+		</div>	
+		</div>
+	</body>
+	
+	
+		
+		<script>
+	
+		$("document").ready(function(){
+			     	var cid=localStorage.getItem("c_id");
+
+		$('#sessions').delegate('tr', 'click' , function(){
+		var value = ($(this).attr('value'));
+		localStorage.setItem("session",value);
+
+			window.location="Attendance.html";
+		});
+		
+       	var i=1;
+       	var c_duration=localStorage.getItem("val");
+       	var html="";
+       	
+       	for(i=1;i<=c_duration;i++){
+       		
+       		html+="<tr id='"+ i +"' value='"+ i +"'><td>Session - " + i + "</td></tr>";	
+		}
+     
+       	
+       	
+       	html=html+"";
+      
+       	//alert(html);
+ 		$( html ).appendTo("#sessions");
+
+  
+});
+	
+
+
+	</script>
+		
+		
+	
+</html>

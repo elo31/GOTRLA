@@ -1,0 +1,123 @@
+	<html>
+	
+		<head>
+			<style>body { background-color: rgb(230,245,253); }</style>
+			<!-- Javascript Imports -->			
+			<script src="http://code.jquery.com/jquery-1.8.2.min.js"></script>
+			<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.9/jquery.validate.min.js"></script>
+			<script src="http://crypto-js.googlecode.com/svn/tags/3.1.2/build/rollups/sha1.js"></script>
+			<script src="http://crypto-js.googlecode.com/svn/tags/3.1.2/build/rollups/aes.js"></script>
+        
+		</head>
+
+		<body>
+			<div style="text-align: center; color:rgb(204,31,134)">
+
+			<h1> Welcome to GOTRLA <br> Girls on the Run of Los Angeles</h1>
+			</div>
+		
+			<div style="text-align: center;">
+			<div style="box-sizing: border-box; display: inline-block; width: auto; max-width: 480px; background-color: rgb(241,212,231); border: 2px solid #0361A8; border-radius: 5px; box-shadow: 0px 0px 8px #0361A8; margin: 50px auto auto;">
+			<div style="background: rgb(204,31,134); border-radius: 5px 5px 0px 0px; padding: 15px;"><span style="font-family: verdana,arial; color: #D4D4D4; font-size: 1.00em; font-weight:bold;">Enter your login and password</span></div>
+			<div style="background: ; padding: 15px">
+			<style type="text/css" scoped>
+				td { text-align:left; font-family: verdana,arial; color: #064073; font-size: 1.00em; }
+				input { border: 1px solid #CCCCCC; border-radius: 5px; color: rgb(204,31,134); display: inline-block; font-size: 1.00em;  padding: 5px; width: 100%; }
+				input[type="button"], input[type="reset"], input[type="submit"] { height: auto; width: auto; cursor: pointer; box-shadow: 0px 0px 5px #0361A8; float: right; text-align:right; margin-top: 10px; margin-left:7px;}
+				table.center { margin-left:auto; margin-right:auto; }
+				.error { font-family: verdana,arial; color: #D41313; font-size: 1.00em; }
+			</style>
+			<!-- Input Form -->		
+			<form method="post" action="" name="aform" target="_top">
+			<input type="hidden" name="action" value="login">
+			<input type="hidden" name="hide" value="">
+			<table class='center'>
+			<tr><td>Username:</td><td><input type="text" name="UsernameInput" id="UsernameInput"></td></tr>
+			<tr><td>Password:</td><td><input type="password" name="PasswordInput" id="PasswordInput"></td></tr>
+			<tr><td>&nbsp;</td><td><input type="submit" value="Login"></td></tr>
+			<tr><td colspan=2>&nbsp;</td></tr>
+			<tr><td colspan=2><a href="">Forgot Password</a>!</td></tr>
+			</table>
+			</form>
+		</div></div></div>   
+        
+	<script>
+	//Validations
+		$("form").validate({
+        	rules: {
+            	UsernameInput: {
+                required: true
+            	},
+           
+           		PasswordInput:{
+                required: true
+            	}
+        	},
+
+       
+        	highlight: function(element) {
+            	$(element).closest('.form-group').addClass('has-error');
+        	},
+        	unhighlight: function(element) {
+            	$(element).closest('.form-group').removeClass('has-error');
+        	},
+        	errorElement: 'span',
+        	errorClass: 'help-block',
+        	errorPlacement: function(error, element) {
+            	if(element.parent('.input-group').length) {
+                	error.insertAfter(element.parent());
+            	} else {
+                	error.insertAfter(element);
+            	}
+        	},
+        	 submitHandler: function() {
+                        var user = $("#UsernameInput").val();
+                        var pass = String(CryptoJS.SHA1($('#PasswordInput').val()));
+   			//Make JSON Object
+     		var makejson = {
+  			v_email: user,
+    		v_password: pass
+			};
+    		var volemailpass=JSON.stringify(makejson);
+ 			
+ 		
+ 			//Ajax Call
+   			$.ajax({
+      		type: "POST",
+      		dataType: "json",
+      		url: "http://gotrla.net/loginvoljson.php", //Relative or absolute path to response.php file
+      		data: volemailpass,
+        	success: function(data) 
+        	{ 
+     
+        		if(!data[0]){
+        			alert ("No such user exists");
+      			}
+        
+        		else{
+	        		//Store user email address and password
+	        		localStorage.setItem( "vname", user);
+	        		localStorage.setItem( "vpass", pass);  
+	        		var v_id=data[0].v_id;
+	        		localStorage.setItem("v_id", v_id);
+	        		//Go to next page
+	         		window.location="Roster.html";
+
+        			}
+      		},
+      
+     
+    		error: function(a,b,c) {
+        		alert("Invalid Details. Check your username and password."+b+c);
+  
+			}
+    		});
+                       }
+                        
+    	});
+
+
+    </script>
+		</body>
+		</html>
+	
