@@ -141,7 +141,7 @@
   			volunteers:volarr
     	};
     	var senddata=JSON.stringify(makejson1);
-    	alert(senddata);
+    	//alert(senddata);
 		
 		//Send Updated Attendance Details	
 		$.ajax({
@@ -152,11 +152,11 @@
         success: function(data3) 
        {
        		
-       		alert("Success!");
+       	//	alert("Success!");
        		window.location="Roster.html";
 		},
 		 error: function(a,b,c) {
-		        alert(a+b+c+"here");
+		        alert(a+b+c+"\nError");
 		  
 		}
     });

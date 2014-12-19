@@ -4,9 +4,54 @@
 			<style>body { background-color: rgb(230,245,253); }</style>
 			<!-- Javascript Imports -->			
 			<script src="http://code.jquery.com/jquery-1.8.2.min.js"></script>
+			<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
 			<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.9/jquery.validate.min.js"></script>
 			<script src="http://crypto-js.googlecode.com/svn/tags/3.1.2/build/rollups/sha1.js"></script>
 			<script src="http://crypto-js.googlecode.com/svn/tags/3.1.2/build/rollups/aes.js"></script>
+			<!-- REMEMBER ME CHECKBOX -->
+
+<script type="text/javascript">
+
+function newCookie(name,value,days) {
+ var days = 1;   // the number at the left reflects the number of days for the cookie to last
+                 // modify it according to your needs
+ if (days) {
+   var date = new Date();
+   date.setTime(date.getTime()+(days*24*60*60*1000));
+   var expires = "; expires="+date.toGMTString(); }
+   else var expires = "";
+   document.cookie = name+"="+value+expires+"; path=/"; }
+
+function readCookie(name) {
+   var nameSG = name + "=";
+   var nuller = '';
+  if (document.cookie.indexOf(nameSG) == -1)
+    return nuller;
+
+   var ca = document.cookie.split(';');
+  for(var i=0; i<ca.length; i++) {
+    var c = ca[i];
+    while (c.charAt(0)==' ') c = c.substring(1,c.length);
+  if (c.indexOf(nameSG) == 0) return c.substring(nameSG.length,c.length); }
+    return null; }
+
+function eraseCookie(name) {
+  newCookie(name,"",1); }
+
+function toMem(a) {
+    newCookie('theName', document.form.UsernameInput.value);     // add a new cookie as shown at left for every
+    newCookie('theEmail', document.form.PasswordInput.value);   // field you wish to have the script remember
+}
+
+function delMem(a) {
+  eraseCookie('theName');   // make sure to add the eraseCookie function for every field
+  eraseCookie('theEmail');
+
+   document.form.UsernameInput.value = '';   // add a line for every field
+   document.form.PasswordInput.value = ''; }
+
+</script>
+
         
 		</head>
 
@@ -28,13 +73,21 @@
 				.error { font-family: verdana,arial; color: #D41313; font-size: 1.00em; }
 			</style>
 			<!-- Input Form -->		
-			<form method="post" action="" name="aform" target="_top">
+			
+			<form name="form" action=" " method="post" onSubmit="if (this.checker.checked) toMem(this)" target="_top">
 			<input type="hidden" name="action" value="login">
 			<input type="hidden" name="hide" value="">
 			<table class='center'>
 			<tr><td>Username:</td><td><input type="text" name="UsernameInput" id="UsernameInput"></td></tr>
 			<tr><td>Password:</td><td><input type="password" name="PasswordInput" id="PasswordInput"></td></tr>
-			<tr><td>&nbsp;</td><td><input type="submit" value="Login"></td></tr>
+			<tr><td>
+            <label class="checkbox">
+                    <!-- <input type="checkbox" value="remember-me" id="remember_me"> Remember me -->                    
+                    <input type="checkbox" id="checker" name="checker" />Remember me
+
+                </label>
+        	</td>
+        	<td><input type="submit" value="Login"></td></tr>
 			<tr><td colspan=2>&nbsp;</td></tr>
 			<tr><td colspan=2><a href="">Forgot Password</a>!</td></tr>
 			</table>
@@ -43,79 +96,192 @@
         
 	<script>
 	//Validations
-		$("form").validate({
-        	rules: {
-            	UsernameInput: {
-                required: true
-            	},
-           
-           		PasswordInput:{
-                required: true
-            	}
-        	},
-
-       
-        	highlight: function(element) {
-            	$(element).closest('.form-group').addClass('has-error');
-        	},
-        	unhighlight: function(element) {
-            	$(element).closest('.form-group').removeClass('has-error');
-        	},
-        	errorElement: 'span',
-        	errorClass: 'help-block',
-        	errorPlacement: function(error, element) {
-            	if(element.parent('.input-group').length) {
-                	error.insertAfter(element.parent());
-            	} else {
-                	error.insertAfter(element);
-            	}
-        	},
-        	 submitHandler: function() {
-                        var user = $("#UsernameInput").val();
-                        var pass = String(CryptoJS.SHA1($('#PasswordInput').val()));
-   			//Make JSON Object
-     		var makejson = {
-  			v_email: user,
-    		v_password: pass
-			};
-    		var volemailpass=JSON.stringify(makejson);
- 			
- 		
- 			//Ajax Call
-   			$.ajax({
-      		type: "POST",
-      		dataType: "json",
-      		url: "http://gotrla.net/loginvoljson.php", //Relative or absolute path to response.php file
-      		data: volemailpass,
-        	success: function(data) 
-        	{ 
-     
-        		if(!data[0]){
-        			alert ("No such user exists");
-      			}
-        
-        		else{
-	        		//Store user email address and password
-	        		localStorage.setItem( "vname", user);
-	        		localStorage.setItem( "vpass", pass);  
-	        		var v_id=data[0].v_id;
-	        		localStorage.setItem("v_id", v_id);
-	        		//Go to next page
-	         		window.location="Roster.html";
-
-        			}
-      		},
-      
-     
-    		error: function(a,b,c) {
-        		alert("Invalid Details. Check your username and password."+b+c);
+		 // $("form").validate({
+        	// rules: {
+            	// UsernameInput: {
+                 // required: true
+				 // },
+//            
+           		// PasswordInput:{
+                 // required: true
+            	// }
+        	 // },
+//       
+        	// highlight: function(element) {
+            	// $(element).closest('.form-group').addClass('has-error');
+        	 // },
+        	// unhighlight: function(element) {
+            	// $(element).closest('.form-group').removeClass('has-error');
+        	 // },
+        	 // errorElement: 'span',
+        	 // errorClass: 'help-block',
+        	 // errorPlacement: function(error, element) {
+            	 // if(element.parent('.input-group').length) {
+                	 // error.insertAfter(element.parent());
+            	 // } else {
+                	 // error.insertAfter(element);
+            	 // }
+        	 // },
+        	  // submitHandler: function() {
+//         	 					 
+                         // var user = $("#UsernameInput").val();
+                         // var pass = String(CryptoJS.SHA1($('#PasswordInput').val()));
+                   // $(function() {      
+                    // if (localStorage.chkbx && localStorage.chkbx != '') {
+                    // $('#remember_me').attr('checked', 'checked');
+                    // $('#UsernameInput').val(localStorage.usrname);
+   					// $('#PasswordInput').val(localStorage.pass);
+                // } else {
+                    // $('#remember_me').removeAttr('checked');
+                    // $('#UsernameInput').val('');
+                    // $('#PasswordInput').val('');
+                // }
+//  
+                // $('#remember_me').click(function() {
+//  
+                    // if ($('#remember_me').is(':checked')) {
+                        // // save username and password
+                        // localStorage.usrname = $('#UsernameInput').val();
+                        // alert(usrname);
+                        // localStorage.pass = $('#PasswordInput').val();
+                        // localStorage.chkbx = $('#remember_me').val();
+                    // } else {
+                        // localStorage.usrname = '';
+                        // localStorage.pass = '';
+                        // localStorage.chkbx = '';
+                    // }
+                // });
+                // });
+//            
+//  
+   			 // //Make JSON Object
+     		 // var makejson = {
+  			 // v_email: user,
+    		 // v_password: pass
+			 // };
+    		 // var volemailpass=JSON.stringify(makejson);
+// 		
+ 			 // //Ajax Call
+   			 // $.ajax({
+      		 // type: "POST",
+      		 // dataType: "json",
+      		 // url: "http://gotrla.net/loginvoljson.php", //Relative or absolute path to response.php file
+      		 // data: volemailpass,
+        	 // success: function(data) 
+        	 // { 
+// 
+        		 // if(!data[0]){
+        			 // alert ("No such user exists");
+      			// }
+// 
+        		 // else{
+	        		 // //Store user email address and password
+	        		 // localStorage.setItem( "vname", user);
+	        		 // localStorage.setItem( "vpass", pass);  
+	        		 // var v_id=data[0].v_id;
+	        		 // localStorage.setItem("v_id", v_id);
+	        		 // //Go to next page
+	         		 // window.location="Roster.html";
+				 // }
+      		 // },
+//        
+//       
+    		 // error: function(a,b,c) {
+        		 // alert("Invalid Details. Check your username and password."+b+c);
+//    
+			 // }
+    		 // });
+                        // }
+//                    
+    	 // });
+    	 
+   $("form").validate({
+        	  rules: {
+            	  UsernameInput: {
+                  required: true
+            	  },
+             
+           		  PasswordInput:{
+                  required: true
+            	  }
+        	  },
   
-			}
-    		});
-                       }
-                        
-    	});
+         
+        	  highlight: function(element) {
+            	  $(element).closest('.form-group').addClass('has-error');
+        	  },
+        	  unhighlight: function(element) {
+            	  $(element).closest('.form-group').removeClass('has-error');
+        	  },
+        	  errorElement: 'span',
+        	  errorClass: 'help-block',
+        	  errorPlacement: function(error, element) {
+            	  if(element.parent('.input-group').length) {
+                	  error.insertAfter(element.parent());
+            	  } else {
+                	  error.insertAfter(element);
+            	  }
+        	  }
+          });
+        
+        	
+        	 	  $("document").ready(function(){
+        	 				 
+					   $('form').submit(function(){
+					 	   
+                          var user = $("#UsernameInput").val();
+                          var pass = String(CryptoJS.SHA1($('#PasswordInput').val()));
+                    		document.form.UsernameInput.value = readCookie("theName");  // Change the names of the fields at right to match the ones in your form.
+							document.form.PasswordInput.value = readCookie("theEmail");
 
+   			 // Make JSON Object
+     		  var makejson = {
+  			  v_email: user,
+    		  v_password: pass
+			  };
+    		  var volemailpass=JSON.stringify(makejson);
+ 			   var x,y,z;
+        	  x=document.getElementById("UsernameInput");
+                y=document.getElementById("PasswordInput");
+  
+                 
+ 			   if(x.value!="" && y.value!=""){
+ 		//	   Ajax Call
+   			  $.ajax({
+      		  type: "POST",
+      		  dataType: "json",
+      		  url: "http://gotrla.net/loginvoljson.php", //Relative or absolute path to response.php file
+      		  data: volemailpass,
+        	  success: function(data) 
+        	  { 
+       
+        		  if(!data[0]){
+        			  alert ("No such user exists");
+      			  }
+          
+        		  else{
+	               // Store user email address and password
+	        		  localStorage.setItem( "vname", user);
+	        		  localStorage.setItem( "vpass", pass);  
+	        		  var v_id=data[0].v_id;
+	        		  localStorage.setItem("v_id", v_id);
+	        		//   Go to next page
+	         		  window.location="Roster.html";
+  
+        			  }
+      		  },
+        
+       
+    		  error: function(a,b,c) {
+        		  alert("Invalid Details. Check your username and password."+b+c);
+    
+			  }
+    		  });
+    	  }
+    	  return false;
+                  });
+                          
+    	  });
 
     </script>
 		</body>
